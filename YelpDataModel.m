@@ -40,8 +40,12 @@
         NSArray *displayAddresses = [dictionary valueForKeyPath:@"location.display_address"];
         self.displayAddress =  [displayAddresses componentsJoinedByString:@", "];
         self.price = dictionary[@"price"];
-        self.latitude = [[dictionary valueForKeyPath:@"coordinates.latitude"]  doubleValue];
-        self.longitude = [[dictionary valueForKeyPath:@"coordinates.longitude"]  doubleValue];
+        
+        NSObject *lat = [dictionary valueForKeyPath:@"coordinates.latitude"];
+        NSObject *lon = [dictionary valueForKeyPath:@"coordinates.longitude"];
+        self.latitude = [lat isKindOfClass:[NSNumber class]] ? [[dictionary valueForKeyPath:@"coordinates.latitude"]  doubleValue] : 0.0;
+        self.longitude = [lon isKindOfClass:[NSNumber class]] ? [[dictionary valueForKeyPath:@"coordinates.longitude"]  doubleValue] : 0.0;
+        //self.longitude = [[dictionary valueForKeyPath:@"coordinates.longitude"]  doubleValue];
         float meterToMile = 0.00062;
         self.distance = [dictionary[@"distance"] integerValue] * meterToMile;
         self.name = dictionary[@"name"];
