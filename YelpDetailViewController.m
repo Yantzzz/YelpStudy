@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, DetailVCTableViewRow) {
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) YelpDataModel *dataModel;
 
-
+@property (nonatomic) UIImage *imageForShare;
 
 @end
 
@@ -47,6 +47,8 @@ typedef NS_ENUM(NSInteger, DetailVCTableViewRow) {
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"share"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapShareButton)];
+
     [self.tableView registerNib:[UINib nibWithNibName:@"MapTableViewCell" bundle:nil]forCellReuseIdentifier:@"MapTableViewCell"];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"DetailViewHeaderTableViewCell" bundle:nil]forCellReuseIdentifier:@"DetailViewHeaderTableViewCell"];
@@ -54,6 +56,13 @@ typedef NS_ENUM(NSInteger, DetailVCTableViewRow) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"share"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapShareButton)];
     
     [self.view addSubview:self.tableView];
+    
+    NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
+                                          dataTaskWithURL:[NSURL URLWithString:self.dataModel.imageUrl] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                              
+                                              self.imageForShare = [UIImage imageWithData:data];
+                                          }];
+    [downloadTask resume];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -62,7 +71,12 @@ typedef NS_ENUM(NSInteger, DetailVCTableViewRow) {
 }
 
 -(void)didTapShareButton {
+    UIActivityViewController *activityViewController =
+    [[UIActivityViewController alloc] initWithActivityItems:@[self.dataModel.name, self.dataModel.displayAddress, self.imageForShare] applicationActivities:nil];
     
+    [self presentViewController:activityViewController
+                       animated:YES
+                     completion:nil];
 }
 
 
