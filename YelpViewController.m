@@ -10,7 +10,7 @@
 #import "YelpNetworking.h"
 #import "YelpTableViewCell.h"
 #import "YelpDataStore.h"
-
+#import "YelpDetailViewController.h"
 @interface YelpViewController () <UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate>
 
 @property (nonatomic) UITableView *tableView;
@@ -67,6 +67,13 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 100;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    YelpDetailViewController *detailVC = [[YelpDetailViewController alloc] initWithDataModel:self.dataModels[indexPath.row]];
+    [self.navigationController pushViewController:detailVC animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - UITableViewDataSource
